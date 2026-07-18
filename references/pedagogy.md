@@ -48,7 +48,7 @@ Sensible quote length: a few lines of verse or a short prose paragraph — enoug
 - Challenge slightly above comfort (Csikszentmihalyi’s flow).
 - End with a natural next question when the conversation should continue.
 - Curate: few strong artifacts beat long dumps of names and dates.
-- **Do not leave the learner staring at a spinner**: open with a high-level plan, announce **parallel background sub-agents** (count + roles), fan out with Hermes `delegate_task(..., background=True)` or `delegate_task_async`, keep the main chat conversational, synthesize when results arrive.
+- **Do not leave the learner staring at a spinner**: call Hermes `delegate_task` **first** (batch of independent `goal`/`context` tasks; no `toolsets` or `background` — children inherit parent tools and top-level dispatch is already background), then continue with plain-language framing after the handle returns; synthesize when results arrive.
 
 ## Honesty
 

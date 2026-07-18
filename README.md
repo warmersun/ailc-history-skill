@@ -9,24 +9,31 @@ It turns open-ended questions about empires, wars, people, and periods into maps
 - Places a topic in **world context** (when, where at scale, who held power, who was at war)
 - Builds **historical maps and timelines** from Wolfram (dated borders, battles, person lifespans)
 - Surfaces **primary sources**, period art/coins, and carefully labeled AI reconstructions when useful
-- Keeps the chat **fast**: high-level answer first, heavy Wolfram work in parallel background tasks
+- Keeps the chat **fast**: dispatch parallel Hermes sub-agents first (they inherit Wolfram + `skill_view`), then high-level framing while maps/timelines finish in the background
 - Stays honest about missing data, contested historiography, and myth vs record
 
 ## Repository layout
 
 ```text
 .
-├── SKILL.md                      # Agent skill definition (entry point)
+├── SKILL.md                      # Parent tutor + orchestration (entry point)
 └── references/
-    ├── pedagogy.md               # Context pass, sources, art, flow
-    └── wolfram-recipes.md        # Wolfram Language helpers and recipes
+    ├── worker-brief.md           # Subagent load order + output contract
+    ├── wolfram-recipes.md        # Sole home for WL evaluator rules + recipes
+    ├── grounding.md              # Visual matrix, art, AI illustration, honesty
+    ├── rivers-natural-earth.md   # Natural Earth centerlines → thick Wolfram rivers
+    ├── reply-format.md           # Learner-facing structure (parent teaching turns)
+    └── pedagogy.md               # Context pass, sources, art, flow
 ```
+
+Parent tutors from `SKILL.md`. Subagents are told (in `delegate_task` context) to `skill_view` `worker-brief.md`, then `wolfram-recipes.md` / `grounding.md` as needed — they do not load the full tutor skill body.
 
 ## Requirements
 
 | Dependency | Role |
 |------------|------|
 | **Wolfram MCP** | Entity resolution, maps, timelines, conflict/event graphs |
+| **skills** toolset | `skill_view` for worker brief and recipes (parent and children) |
 | **made-to-stick** (optional) | Sticky storytelling technique (SUCCESS); skill still works without it |
 
 If Wolfram is unavailable, the skill falls back to careful prose and does not invent map image URLs.
@@ -54,27 +61,19 @@ Trigger when the learner wants to explore history, for example:
 
 Typical turn shape:
 
-1. Immediate high-level framing in plain language  
-2. Parallel lookups (continent geopolitics, conflicts, focus map/timeline, era & sources)  
-3. Synthesis: one strong visual, a short story or quote, a next hook  
+1. `delegate_task` fan-out (each child context mandates `skill_view` of worker-brief + wolfram-recipes)  
+2. High-level framing in plain language after the handle returns  
+3. Later synthesis in the reply format: headed sections, full sentences that gloss terms, short tables when useful, one strong visual, a next hook  
 
 ## Entity types (Wolfram)
 
-| Type | Use for |
-|------|---------|
-| `HistoricalCountry` | Kingdoms, empires, dated borders |
-| `MilitaryConflict` | Wars, battles, actor graphs |
-| `HistoricalPeriod` | Eras, dynasties, cultural ages |
-| `Person` | Notable people and lifespans |
-| `HistoricalEvent` | Events, inventions, milestones |
-| `GeographicRegion` | Continent-scale maps |
-
-Names are always resolved with free-form / typed interpreters — never hand-written canonical entity IDs.
+Canonical list and evaluator rules live in [`references/wolfram-recipes.md`](references/wolfram-recipes.md). Names are always resolved with free-form / typed interpreters — never hand-written canonical entity IDs.
 
 ## Design principles
 
 - **Learner-facing only** — no pedagogy jargon or orchestration labels in replies  
 - **Compute over guess** — maps and timelines from Wolfram when geography or chronology matter  
+- **DRY references** — WL rules only in wolfram-recipes; shared visuals/honesty in grounding; workers get a thin brief  
 - **Curate** — few strong artifacts beat long dumps  
 - **Label reconstructions** — AI images are modern impressions, never substitutes for dated maps  
 

@@ -24,7 +24,9 @@ In this skill, **MUST** and **SHOULD** mean:
 
 Teaching turns **SHOULD** always include a **visual** and a **story** element — a grounded map, timeline, or period image when available, and a memorable human-scale narrative hook.
 
-When a **story** element is present, you **MUST** illustrate it with a concrete image of that moment, person, or scene — not a Wolfram map or timeline. Find a suitable image online (period fine art, museum photo, coin, etc.), or — more often — generate an illustration with AI image generation. Prefer a real period/photo image when a good one exists; otherwise generate and label it a modern reconstruction. Details: `references/grounding.md`.
+When a **story** element is present, you **MUST** illustrate it with a concrete image of that moment, person, or scene — not a Wolfram map or timeline. Prefer a real period/photo image when a good one exists; otherwise generate and label it a modern reconstruction. Details: `references/grounding.md`.
+
+**Finding or generating that image MUST be delegated** to a subagent via `delegate_task` — the parent orchestrator does not search for images or call AI image generation itself. The parent supplies a short scene brief (year, place, who/what, story moment) in the child `context`; the child returns the image + caption.
 
 ## Dependencies
 
@@ -121,7 +123,7 @@ Parallel fan-out is good. **Oversized goals are not.**
 - Each child: **≤3 small deliverables** (maps/timelines/short fact lists). Prefer 1–2 when enough.
 - Each `goal` / `context` stays **short**: year, theater, entity free-text, which recipe(s) — **not** a research agenda (“full context pass”, “everything about…”, long and-also chains).
 - Need more than 3 deliverables in one theme → **split across children** or defer to a later turn.
-- Children return **visuals + terse facts only**. **You** (the parent) write the learner-facing story and reply-format prose.
+- Children return **visuals + terse facts only** (including story-illustration images). **You** (the parent) write the learner-facing story and reply-format prose — but **MUST** delegate image find/generate, not do it yourself.
 
 ### For any non-trivial history turn
 
@@ -172,9 +174,9 @@ Keep parallelism; keep each row thin:
 | 1 | **Geopolitics** — one continent/world map | Year, theater; recipe: continent map; ≤5 power names |
 | 2 | **Conflicts** — community list and/or one war map | Year, theater; recipe: wars near a year |
 | 3 | **Focus visual** — one empire/war/person map or timeline | Entity free-text, year; one focus recipe |
-| 4 | **Story illustration** — one coin/photo or labeled AI image for the story | Topic/year/scene; load grounding.md; one image + caption |
+| 4 | **Story illustration** — find period/photo image or generate labeled AI image | Year/place/who/what/story moment; load grounding.md; one image + caption |
 
-If only three slots: parent handles story illustration / sources while 1–3 run as children. Do **not** stuff periods + events + notables + art into one child.
+When a story is planned, one child **MUST** be story illustration. If concurrency is full (default 3), keep story illustration in the first batch and defer a lower-priority map child. Parent writes the story prose; **never** finds or generates the image on the main turn. Do **not** stuff periods + events + notables + art into one child.
 
 ### Context for every sub-agent (critical)
 

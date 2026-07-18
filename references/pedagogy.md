@@ -22,7 +22,7 @@ This checklist is for **what the conversation can cover over time** and what the
 ## Story and stickiness
 
 - Aim for a memorable human-scale story when it helps learning.
-- When you use a story, **MUST** illustrate it (period/photo image or AI generation) — see `references/grounding.md`.
+- When you use a story, **MUST** illustrate it (period/photo image or AI generation), via a **subagent** — see `references/grounding.md`.
 - For technique (simplicity, unexpectedness, concreteness, credibility, emotion, story shape), use the related skill **made-to-stick** if available.
 - Myths/folklore: allowed, **labeled**, not sold as fact.
 

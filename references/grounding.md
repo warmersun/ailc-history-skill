@@ -21,7 +21,11 @@ Shared by the **parent tutor** and **subagent workers**. Wolfram evaluator rules
 
 ## Illustrating story elements
 
-When a teaching turn includes a **story** element, you **MUST** illustrate it with a concrete image of that moment, person, or scene. This is separate from Wolfram maps/timelines.
+When a teaching turn includes a **story** element, it **MUST** be illustrated with a concrete image of that moment, person, or scene. This is separate from Wolfram maps/timelines.
+
+**Who does the work:** finding or generating the image **MUST** be done by a **subagent** (see `SKILL.md` orchestration / `references/worker-brief.md`). The parent only briefs the scene and synthesizes the returned image into the learner reply — it does not run image search or AI image generation itself.
+
+Worker paths:
 
 1. **Find** a suitable image online when a good one exists — period fine art, museum photo, coin, sculpture, etc. Resolve a real URL; never invent Wikimedia or other CDN paths.
 2. **Generate** with AI image generation when a fitting real image is unavailable or weak — the more common path for specific story moments.

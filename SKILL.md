@@ -77,7 +77,7 @@ Use recipes in `references/wolfram-recipes.md`. Summarize in prose; show one cle
 ## Stories and sources
 
 - **Primary sources first** when a good one exists — quote briefly and name the work/author.
-- **Secondary sources** for synthesis; paraphrase more often than quote.
+- **Secondary / encyclopedia web search:** use **[Grokipedia](https://grokipedia.com)** — **not Wikipedia**. Details: `references/grounding.md`.
 - Myths/folklore OK when **labeled**. Do not invent quotes — see `references/grounding.md` and `references/pedagogy.md`.
 
 ## Wolfram and visuals (pointers only)
@@ -103,21 +103,29 @@ Hermes docs: [delegation patterns](https://hermes-agent.nousresearch.com/docs/gu
 - Keep children as **leaf** (omit `role`, or `"leaf"`). Stay within `delegation.max_concurrent_children` (**default 3**).
 - **Do not** tell children to load the full `SKILL.md` — they load `references/worker-brief.md` via `skill_view`.
 
+### Per-child scope (critical)
+
+Parallel fan-out is good. **Oversized goals are not.**
+
+- Each child: **≤3 small deliverables** (maps/timelines/short fact lists). Prefer 1–2 when enough.
+- Each `goal` / `context` stays **short**: year, theater, entity free-text, which recipe(s) — **not** a research agenda (“full context pass”, “everything about…”, long and-also chains).
+- Need more than 3 deliverables in one theme → **split across children** or defer to a later turn.
+- Children return **visuals + terse facts only**. **You** (the parent) write the learner-facing story and reply-format prose.
+
 ### For any non-trivial history turn
 
 1. Parse topic / year / theater enough to write self-contained `goal` / `context` strings.
 
-2. Break into **2–3 independent subtasks** (cap at concurrency).
+2. Break into **2–3 independent subtasks** (cap at concurrency) — each with a thin goal.
 
-3. **First tool call — dispatch** `delegate_task`. Every child `context` **must** start with the worker preamble below, then year/theater/task specifics only (no pasted WL rule lists).
+3. **First tool call — dispatch** `delegate_task`. Every child `context` **must** start with the worker preamble below, then a **brief** year/theater/recipe line (no laundry lists, no pasted WL rules).
 
 **Mandatory child-context preamble:**
 
 ```text
 First tool calls: skill_view("ailc-history", "references/worker-brief.md"),
 then skill_view("ailc-history", "references/wolfram-recipes.md").
-Load grounding.md if art/AI/visual choice matters; rivers-natural-earth.md if rivers are the argument.
-Follow the worker brief. Return short findings + markdown image links only.
+Follow the worker brief. Return visuals + terse fact bullets only (≤3 deliverables).
 Do not teach the learner; do not call delegate_task.
 ```
 
@@ -127,12 +135,12 @@ Batch example shape:
 delegate_task(
     tasks=[
         {
-            "goal": "subtask 1 description",
-            "context": "<preamble>\n\nYear: …. Theater: …. Task specifics / which recipe."
+            "goal": "Continent map for year Y in theater Z",
+            "context": "<preamble>\n\nYear: …. Theater: …. Recipe: continent map. ≤5 bullets naming big powers."
         },
         {
-            "goal": "subtask 2 description",
-            "context": "<preamble>\n\n…"
+            "goal": "Conflict communities near year Y",
+            "context": "<preamble>\n\nYear: …. Recipe: wars near a year. Short cluster list; map only if cheap."
         }
     ]
 )
@@ -142,30 +150,32 @@ delegate_task(
 
 5. **Do NOT wait** for children — continue light teaching (story seed, framing).
 
-6. When results arrive later, **synthesize**: maps, clusters, captions, next hook.
+6. When results arrive later, **synthesize**: maps, short facts, captions, next hook — you write the prose.
 
 ### Typical 2–4 subtask split (history)
 
-| # | Goal (example) | Context must include |
-|---|----------------|----------------------|
-| 1 | **Geopolitics** — continent/world dated map; major polities for year Y | Preamble + year, theater; recipe: continent map |
-| 2 | **Conflicts** — wars near Y; actor↔conflict graph; clusters | Preamble + year, theater; conflict recipes |
-| 3 | **Focus visual** — empire/war/person map or timeline asked for | Preamble + entity free-text, year, geoRange |
-| 4 | **Era, art & sources** — periods, events, notables; coin/art or careful AI | Preamble + topic/year; load grounding.md |
+Keep parallelism; keep each row thin:
 
-If only three slots: merge era/art/sources into the main agent while 1–3 run as children.
+| # | Goal (example) | Context after preamble |
+|---|----------------|------------------------|
+| 1 | **Geopolitics** — one continent/world map | Year, theater; recipe: continent map; ≤5 power names |
+| 2 | **Conflicts** — community list and/or one war map | Year, theater; recipe: wars near a year |
+| 3 | **Focus visual** — one empire/war/person map or timeline | Entity free-text, year; one focus recipe |
+| 4 | **Art** (optional) — one coin/photo or labeled AI image | Topic/year; load grounding.md; one image + caption |
+
+If only three slots: parent handles art/sources while 1–3 run as children. Do **not** stuff periods + events + notables + art into one child.
 
 ### Context for every sub-agent (critical)
 
-Sub-agents have **zero conversation history**. Each `context` must be self-contained:
+Sub-agents have **zero conversation history**. Each `context` must be self-contained and **short**:
 
 - Mandatory `skill_view` preamble (worker-brief → wolfram-recipes → …)
-- Learner question, pinned year/range, geography, task specifics
-- Output contract is defined in `worker-brief.md` — do not paste long WL rule lists
+- Year/range, geography, entity, named recipe(s) — enough for ≤3 deliverables
+- Output contract in `worker-brief.md` — do not paste long WL rule lists or essay prompts
 
 ### Parallelism rules
 
-- One sub-agent per **independent** workload.
+- One sub-agent per **independent** thin workload (not one mega-agenda per child).
 - Dispatch as soon as year/topic is clear.
 - Call `delegate_task` **first**, then continue after the handle — do not poll for completion.
 - If a child times out or returns empty, tell the learner and continue with what you have.
@@ -209,16 +219,16 @@ Learner: “Roman Empire around 100 AD.”
 delegate_task(
     tasks=[
         {
-            "goal": "Continent geopolitics for Mediterranean/Europe c. 100 AD: dated map + major polities",
-            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Return short findings + markdown image links only. Do not teach the learner; do not call delegate_task.\n\nYear: 100 AD. Theater: Europe + Near East. Recipe: continent map. Short summary of big powers only."
+            "goal": "Continent map Europe/Near East c. 100 AD",
+            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Visuals + terse facts only; ≤3 deliverables. Do not teach the learner; do not call delegate_task.\n\nYear: 100 AD. Theater: Europe + Near East. Recipe: continent map. ≤5 bullets: big powers."
         },
         {
-            "goal": "Military conflicts near 100 AD; actor-conflict graph; cluster communities",
-            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Return short findings + markdown image links only. Do not teach the learner; do not call delegate_task.\n\nYear: 100 AD, yearsBack ~5–20 if sparse. Recipe: wars/revolutions near a year + optional war map."
+            "goal": "Conflict communities near 100 AD",
+            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Visuals + terse facts only; ≤3 deliverables. Do not teach the learner; do not call delegate_task.\n\nYear: 100 AD. yearsBack: 10. Recipe: wars near a year. Bullet clusters only."
         },
         {
-            "goal": "Focus historical map of Roman Empire in 100 AD",
-            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Return short findings + markdown image links only. Do not teach the learner; do not call delegate_task.\n\nhistoricalCountry free text: Roman Empire. Year: 100. Recipe: historical country in a year."
+            "goal": "Map Roman Empire in 100 AD",
+            "context": "First tool calls: skill_view(\"ailc-history\", \"references/worker-brief.md\"), then skill_view(\"ailc-history\", \"references/wolfram-recipes.md\"). Follow the worker brief. Visuals + terse facts only; ≤3 deliverables. Do not teach the learner; do not call delegate_task.\n\nEntity: Roman Empire. Year: 100. Recipe: historical country in a year. Image + one-line caption."
         }
     ]
 )

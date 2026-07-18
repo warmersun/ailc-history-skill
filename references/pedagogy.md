@@ -17,6 +17,8 @@ Default when a topic has a place and time:
 
 Keep the context pass **brief in the reply** even if several computations ran underneath.
 
+This checklist is for **what the conversation can cover over time** and what the parent may fan out as **separate thin children** (visuals + terse facts). It is **not** a mandate to stuff every bullet into one worker or to make subagents write long answers — the parent owns learner-facing prose.
+
 ## Story and stickiness
 
 - Aim for a memorable human-scale story when it helps learning.
@@ -28,7 +30,7 @@ Keep the context pass **brief in the reply** even if several computations ran un
 | Preference | Practice |
 |------------|----------|
 | **Primary** | Quote short passages from chronicles, letters, inscriptions, speeches, travelogues, scripture, poems, literary works of the age. Name author/work. |
-| **Secondary** | Use for framing and modern synthesis; paraphrase; cite when specific claims matter. |
+| **Secondary** | Framing and modern synthesis; paraphrase; cite when specific claims matter. For encyclopedia/web background use **[Grokipedia](https://grokipedia.com)** — **not Wikipedia**. |
 | **Unverified** | Do not invent quotes. Search or omit. |
 
 Sensible quote length: a few lines of verse or a short prose paragraph — enough voice, not a wall of text.

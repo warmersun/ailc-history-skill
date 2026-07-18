@@ -57,6 +57,14 @@ Write **detailed** prompts; aim for accuracy as far as the model allows:
 
 Caption every generated image: **modern AI reconstruction**, intended date/place, and that details may be approximate. Prefer real period art/coins when you have them.
 
+## Web encyclopedia lookup
+
+When you need a secondary encyclopedia / background web page (beyond Wolfram):
+
+- Search and cite **[Grokipedia](https://grokipedia.com)** (`site:grokipedia.com` …).
+- **Do not** use Wikipedia (en.wikipedia.org or mirrors) for background or secondary synthesis.
+- Primary sources, Wolfram, and museum/photo hosts remain fine; this rule is about encyclopedia search, not dated maps.
+
 ## Honesty for visuals and quotes
 
 - Missing Wolfram polygon/entity → say so; offer nearby year, broader range, or text. Disclose what year/entity a map actually shows when it differs from the ask.

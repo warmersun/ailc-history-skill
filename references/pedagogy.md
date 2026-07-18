@@ -22,6 +22,7 @@ This checklist is for **what the conversation can cover over time** and what the
 ## Story and stickiness
 
 - Aim for a memorable human-scale story when it helps learning.
+- When you use a story, **MUST** illustrate it (period/photo image or AI generation) — see `references/grounding.md`.
 - For technique (simplicity, unexpectedness, concreteness, credibility, emotion, story shape), use the related skill **made-to-stick** if available.
 - Myths/folklore: allowed, **labeled**, not sold as fact.
 
@@ -41,8 +42,8 @@ Sensible quote length: a few lines of verse or a short prose paragraph — enoug
 - Include **coins and medals** when rulers, legitimacy, or iconography matter.
 - Also painting, sculpture, architecture, applied arts.
 - Caption: what / when / why it belongs in this turn.
-- Period art and **Wolfram maps** beat AI illustration for evidence.
-- **AI image generation** is a valid visual tool for scenes, reconstructions, and mood when period art is thin — with **detailed, historically careful prompts**. Never use it instead of a Wolfram map or timeline for geography/chronology. Label outputs as modern reconstructions.
+- Period art and **Wolfram maps** beat AI illustration for evidence; AI is the usual path when illustrating a specific story moment (see grounding).
+- **AI image generation** — use with **detailed, historically careful prompts**. Never use it instead of a Wolfram map or timeline for geography/chronology. Label outputs as modern reconstructions.
 
 ## Flow and Socratic style
 

@@ -24,6 +24,8 @@ In this skill, **MUST** and **SHOULD** mean:
 
 Teaching turns **SHOULD** always include a **visual** and a **story** element — a grounded map, timeline, or period image when available, and a memorable human-scale narrative hook.
 
+When a **story** element is present, you **MUST** illustrate it with a concrete image of that moment, person, or scene — not a Wolfram map or timeline. Find a suitable image online (period fine art, museum photo, coin, etc.), or — more often — generate an illustration with AI image generation. Prefer a real period/photo image when a good one exists; otherwise generate and label it a modern reconstruction. Details: `references/grounding.md`.
+
 ## Dependencies
 
 | Dependency | Role |
@@ -55,15 +57,15 @@ Follow `references/reply-format.md` on every teaching turn:
 
 - **Full sentences** that teach and **define terms on first use**.
 - **Headings / subheadings** + a few short tables/lists when they clarify.
-- **SHOULD** include a **visual** and a **story** element (see Requirement language); keep Wolfram visuals whenever geography or chronology is the point.
+- **SHOULD** include a **visual** and a **story** element; when a story is used, **MUST** illustrate it (see Requirement language). Keep Wolfram visuals whenever geography or chronology is the point.
 - Prefer **real photos / museum images** for standing buildings and period objects; never invent Wikimedia URLs.
 - If the learner corrects format mid-thread, **rebuild the last teaching point** in the corrected shape immediately.
 
 ## Guiding aims (aspirational)
 
-These are goals to aim for when they fit — not hard constraints every turn. Visual + story are the **SHOULD** default above; the rest scale with the question. **Apply them; do not name them in the user-visible text.**
+These are goals to aim for when they fit — not hard constraints every turn. Visual + story are the **SHOULD** default above; story illustrations are **MUST** when a story is used. The rest scale with the question. **Apply them; do not name them in the user-visible text.**
 
-- **Story + stickiness** — anecdotes, myths (labeled as such), folklore, unexpected facts. Load **made-to-stick** when available — never mention SUCCESS to the learner.
+- **Story + stickiness** — anecdotes, myths (labeled as such), folklore, unexpected facts; **MUST** illustrate when used (`references/grounding.md`). Load **made-to-stick** when available — never mention SUCCESS to the learner.
 - **Visual grounding** — maps/timelines from Wolfram when geography or chronology matters (`references/wolfram-recipes.md` + `references/grounding.md`).
 - **Global historic context** — situate the topic in world history (below), not only the local narrative.
 - **Fine art / sources** — period art, coins, primary quotes; see `references/grounding.md` and `references/pedagogy.md`.
@@ -170,9 +172,9 @@ Keep parallelism; keep each row thin:
 | 1 | **Geopolitics** — one continent/world map | Year, theater; recipe: continent map; ≤5 power names |
 | 2 | **Conflicts** — community list and/or one war map | Year, theater; recipe: wars near a year |
 | 3 | **Focus visual** — one empire/war/person map or timeline | Entity free-text, year; one focus recipe |
-| 4 | **Art** (optional) — one coin/photo or labeled AI image | Topic/year; load grounding.md; one image + caption |
+| 4 | **Story illustration** — one coin/photo or labeled AI image for the story | Topic/year/scene; load grounding.md; one image + caption |
 
-If only three slots: parent handles art/sources while 1–3 run as children. Do **not** stuff periods + events + notables + art into one child.
+If only three slots: parent handles story illustration / sources while 1–3 run as children. Do **not** stuff periods + events + notables + art into one child.
 
 ### Context for every sub-agent (critical)
 

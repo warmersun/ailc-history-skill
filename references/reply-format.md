@@ -2,31 +2,34 @@
 
 How teaching turns should look. Validated in live tutoring (Ivan IV / Kazan, 2026-07): the learner liked **full sentences that define terms + headings + short tables + Wolfram visuals + real art photos when asked**.
 
-This complements the voice rules in `SKILL.md`: structure the reply for reading, but never surface pedagogy jargon, SUCCESS labels, orchestration roles, or tool/recipe names as section titles.
+This complements the voice rules in `SKILL.md`: structure the reply for reading, but never surface pedagogy jargon, SUCCESS labels, orchestration roles, or tool/recipe names as section titles. **MUST** / **SHOULD** mean what `SKILL.md` defines under Requirement language.
 
 ## Default shape
 
 **Structure + full sentences** — not a slide deck of bullets, and not a wall of unbroken paragraphs.
+
+Teaching turns **SHOULD** include both a **visual** and a **story** element. Light turns (a quick clarification) may omit either when there is a valid reason.
 
 | Do | Don’t |
 |----|--------|
 | **Headings and subheadings** for every major beat (topic-facing titles) | Bullet-only dumps with no narrative |
 | **Full sentences** that teach and **define terms on first use** | Jargon dropped bare without a gloss |
 | **Short tables / short lists** when they clarify | Overlong tables that replace teaching |
-| **Keep Wolfram visuals** (maps, timelines as markdown image links) | Prose-only turns when geography or chronology is the point |
+| **Visual** — map, timeline, or period image (Wolfram when geography/chronology is the point) | Prose-only teaching turns with no grounded visual when one would help |
+| **Story** — a memorable human-scale narrative hook, woven in invisibly | Dry summary with no anecdote, character, or unexpected concrete detail |
 | **Define unfamiliar terms on first use** in plain language | Assume undergrad vocabulary |
 | Plain status (“I’m pulling a wider map…”) | Meta labels (“SUCCESS-shaped”, “context pass”, “sub-agent 2”) |
 
 ## Approved skeleton
 
 1. **Title** — topic-facing, not a process label  
-2. **Short core idea** (1–3 sentences)  
+2. **Short core idea** (1–3 sentences), preferably with a **story** hook  
 3. **Headed sections** in full sentences  
 4. **One or two short tables** (terms, dates, compare/contrast) when useful  
-5. **Wolfram map/timeline images** embedded where geography or chronology matters  
+5. **Visual** — Wolfram map/timeline when geography or chronology matters; otherwise a period image when available  
 6. **Next hooks** (short list OK)
 
-Light turns (a quick clarification) can compress this; multi-part teaching turns should not skip structure or visuals when those are the point.
+Light turns can compress this. Multi-part teaching turns **SHOULD** keep structure, a visual, and a story element unless there is a valid reason to omit.
 
 ## Balance pitfall
 

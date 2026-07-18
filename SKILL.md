@@ -113,7 +113,7 @@ Hermes docs: [delegation patterns](https://hermes-agent.nousresearch.com/docs/gu
 - Call shape: **`goal` + `context`**, or a **`tasks`** array of `{goal, context, role?}` objects.
 - Do **not** pass `toolsets` — children **inherit** the parent’s enabled toolsets (including Wolfram MCP and **skills** / `skill_view`). Ensure both are enabled on the parent.
 - Do **not** pass `background=True` — top-level `delegate_task` already runs in the background.
-- Keep children as **leaf** (omit `role`, or `"leaf"`). Stay within `delegation.max_concurrent_children` (**default 3**).
+- Keep children as **leaf** (omit `role`, or `"leaf"`). Stay within `delegation.max_concurrent_children` (**4** — set this in Hermes config if the host default is lower).
 - **Do not** tell children to load the full `SKILL.md` — they load `references/worker-brief.md` via `skill_view`.
 
 ### Per-child scope (critical)
@@ -129,7 +129,7 @@ Parallel fan-out is good. **Oversized goals are not.**
 
 1. Parse topic / year / theater enough to write self-contained `goal` / `context` strings.
 
-2. Break into **2–3 independent subtasks** (cap at concurrency) — each with a thin goal.
+2. Break into **2–4 independent subtasks** (cap at concurrency) — each with a thin goal.
 
 3. **First tool call — dispatch** `delegate_task`. Every child `context` **must** start with the worker preamble below, then a **brief** year/theater/recipe line (no laundry lists, no pasted WL rules).
 
@@ -176,7 +176,7 @@ Keep parallelism; keep each row thin:
 | 3 | **Focus visual** — one empire/war/person map or timeline | Entity free-text, year; one focus recipe |
 | 4 | **Story illustration** — find period/photo image or generate labeled AI image | Year/place/who/what/story moment; load grounding.md; one image + caption |
 
-When a story is planned, one child **MUST** be story illustration. If concurrency is full (default 3), keep story illustration in the first batch and defer a lower-priority map child. Parent writes the story prose; **never** finds or generates the image on the main turn. Do **not** stuff periods + events + notables + art into one child.
+When a story is planned, one child **MUST** be story illustration. With concurrency **4**, the typical geopolitics + conflicts + focus + story-illustration split fits in one batch; if you need more than 4, keep story illustration in the first batch and defer a lower-priority map child. Parent writes the story prose; **never** finds or generates the image on the main turn. Do **not** stuff periods + events + notables + art into one child.
 
 ### Context for every sub-agent (critical)
 
@@ -200,7 +200,7 @@ If the topic is unclear: ask what they want to learn about.
 
 ### Working a topic
 1. **Understand** the question and the level.
-2. **Dispatch** `delegate_task` with 2–3 independent subtasks **first** (worker-brief preamble in every context).
+2. **Dispatch** `delegate_task` with 2–4 independent subtasks **first** (worker-brief preamble in every context).
 3. **Then** immediate high-level learner reply in plain language.
 4. **Keep the main chat alive** without waiting for children.
 5. **Later: synthesize** arriving results into maps, geopolitics, sources, next hook.

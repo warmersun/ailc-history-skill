@@ -23,7 +23,8 @@ It turns open-ended questions about empires, wars, people, and periods into maps
     ├── grounding.md              # Visual matrix, art, AI illustration, honesty
     ├── rivers-natural-earth.md   # Natural Earth centerlines → thick Wolfram rivers
     ├── reply-format.md           # Learner-facing structure (parent teaching turns)
-    └── pedagogy.md               # Context pass, sources, art, flow
+    ├── pedagogy.md               # Context pass, sources, art, flow
+    └── primary-sources.md        # Letter/source deep-dives, editions, verified quotes
 ```
 
 Parent tutors from `SKILL.md`. Subagents are told (in `delegate_task` context) to `skill_view` `worker-brief.md`, then `wolfram-recipes.md` / `grounding.md` as needed — they do not load the full tutor skill body.

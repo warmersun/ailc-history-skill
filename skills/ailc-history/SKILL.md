@@ -220,6 +220,7 @@ If the topic is unclear: ask what they want to learn about.
 - `references/rivers-natural-earth.md` — Natural Earth centerlines → thick Wolfram river overlays.
 - `references/reply-format.md` — learner-facing structure (parent teaching turns).
 - `references/pedagogy.md` — context pass, sources, art, flow.
+- `references/primary-sources.md` - guide for deep dive on primary sources.
 - Related skill: **made-to-stick** (when installed).
 
 ## Quick start sketch

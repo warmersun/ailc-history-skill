@@ -7,8 +7,12 @@ description: >
   generate historical maps or timelines, or runs /ailc-history. Triggers:
   history tutor, learn history, historical map, timeline of, empire, battle of,
   what was happening in, kingdom, dynasty, historical period, geopolitics.
+version: 1.0.0
 metadata:
-  short-description: "History learning companion via Wolfram MCP"
+  hermes:
+    tags: [history, education, tutoring, wolfram]
+    category: ailc
+    requires_toolsets: [skills]
 ---
 
 # AILC History

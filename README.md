@@ -16,15 +16,17 @@ It turns open-ended questions about empires, wars, people, and periods into maps
 
 ```text
 .
-├── SKILL.md                      # Parent tutor + orchestration (entry point)
-└── references/
-    ├── worker-brief.md           # Subagent load order + output contract
-    ├── wolfram-recipes.md        # Sole home for WL evaluator rules + recipes
-    ├── grounding.md              # Visual matrix, art, AI illustration, honesty
-    ├── rivers-natural-earth.md   # Natural Earth centerlines → thick Wolfram rivers
-    ├── reply-format.md           # Learner-facing structure (parent teaching turns)
-    ├── pedagogy.md               # Context pass, sources, art, flow
-    └── primary-sources.md        # Letter/source deep-dives, editions, verified quotes
+└── skills/
+    └── ailc-history/
+        ├── SKILL.md                      # Parent tutor + orchestration (entry point)
+        └── references/
+            ├── worker-brief.md           # Subagent load order + output contract
+            ├── wolfram-recipes.md        # Sole home for WL evaluator rules + recipes
+            ├── grounding.md              # Visual matrix, art, AI illustration, honesty
+            ├── rivers-natural-earth.md   # Natural Earth centerlines → thick Wolfram rivers
+            ├── reply-format.md           # Learner-facing structure (parent teaching turns)
+            ├── pedagogy.md               # Context pass, sources, art, flow
+            └── primary-sources.md        # Letter/source deep-dives, editions, verified quotes
 ```
 
 Parent tutors from `SKILL.md`. Subagents are told (in `delegate_task` context) to `skill_view` `worker-brief.md`, then `wolfram-recipes.md` / `grounding.md` as needed — they do not load the full tutor skill body.
@@ -39,16 +41,24 @@ Parent tutors from `SKILL.md`. Subagents are told (in `delegate_task` context) t
 
 If Wolfram is unavailable, the skill falls back to careful prose and does not invent map image URLs.
 
-## Install
+## Install (Hermes)
 
-Copy or clone this skill into your agent’s skills directory (name as required by your host, e.g. `ailc-history`):
+Register this repo as a [Hermes skills tap](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#publishing-a-custom-skill-tap), then install the skill. Use the `owner/repo` form — not a full GitHub URL.
 
 ```bash
-git clone https://github.com/warmersun/ailc-history-skill.git
-# then link or copy into your skills path
+hermes skills tap add warmersun/ailc-history-skill
+hermes skills install warmersun/ailc-history-skill/skills/ailc-history --category ailc
 ```
 
-Ensure the host can load `SKILL.md` and has Wolfram MCP configured (`WolframContext`, `WolframAlpha`, `WolframLanguageEvaluator` or equivalent).
+After that, `/ailc-history` is available in chat. To pick up upstream changes later:
+
+```bash
+hermes skills update ailc-history
+```
+
+`tap add` only registers the source; `install` is what copies `SKILL.md` and `references/` into `~/.hermes/skills/`. Prefer the install identifier above over `hermes skills search` — custom taps are easy to miss in search (Hermes may skip GitHub when its index is available, and `--source github` can time out while scanning the large default taps).
+
+Ensure Wolfram MCP is configured (`WolframContext`, `WolframAlpha`, `WolframLanguageEvaluator` or equivalent).
 
 ## Usage
 
@@ -68,7 +78,7 @@ Typical turn shape:
 
 ## Entity types (Wolfram)
 
-Canonical list and evaluator rules live in [`references/wolfram-recipes.md`](references/wolfram-recipes.md). Names are always resolved with free-form / typed interpreters — never hand-written canonical entity IDs.
+Canonical list and evaluator rules live in [`skills/ailc-history/references/wolfram-recipes.md`](skills/ailc-history/references/wolfram-recipes.md). Names are always resolved with free-form / typed interpreters — never hand-written canonical entity IDs.
 
 ## Design principles
 

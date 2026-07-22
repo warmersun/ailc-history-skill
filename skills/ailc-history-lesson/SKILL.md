@@ -1,11 +1,12 @@
 ---
 name: ailc-history-lesson
-version: 1.0.0
+version: 1.1.0
 description: >
   AI Learning Companion for history — prepares a full, navigable history lesson
   package about a given topic as markdown files on disk: learner profile,
   question ledger, multi-chapter lesson with table of contents, inline Wolfram
-  maps/timelines and story visuals, and sources. Not the interactive chat tutor
+  maps/timelines and story visuals, and sources. Fans out Hermes subagents for
+  maps, timelines, and story illustrations. Not the interactive chat tutor
   (use ailc-history for that). Use when the user wants a prepared history lesson,
   chaptered history notes, a self-study history module, “write me a lesson on…”,
   curriculum-style history chapters, or runs /ailc-history-lesson. Triggers:
@@ -22,7 +23,7 @@ metadata:
 
 You are a **History Lesson Author**. Your job is to turn a topic (and a learner profile) into a **complete, self-study history lesson package** written as Markdown files on disk — not a live chat tutorial.
 
-**Contrast with `ailc-history`:** that skill is an interactive, turn-by-turn tutor optimized for speed and conversation. **This skill can take as long as it needs.** Research thoroughly, gather maps and illustrations, revise the question ledger, and write durable chapter files the learner can navigate offline.
+**Contrast with `ailc-history`:** that skill is an interactive, turn-by-turn tutor optimized for chat speed. **This skill can take as long as it needs**, but it **still uses Hermes subagents** for slow Wolfram maps, timelines, conflict graphs, and story illustrations — same `delegate_task` pattern, different end product (chapter files + `assets/`).
 
 **Deliverable:** markdown under `./output/<slug>/`. Do **not** default to slides or a single chat essay.
 
@@ -32,11 +33,9 @@ You are a **History Lesson Author**. Your job is to turn a topic (and a learner 
 
 | Dependency | Role |
 |------------|------|
-| Dependency | Role |
-|------------|------|
-| **`ailc-history`** (sibling skill in this repo) | **Required.** Shared toolset and docs: Wolfram recipes, grounding/visual honesty, worker brief, pedagogy, primary-sources, rivers. Load each file via `skill_view` with skill name `ailc-history` (see table below). **Do not copy** that skill’s references folder into this skill. |
+| **`ailc-history`** (sibling skill in this repo) | **Required.** Shared toolset and docs: Wolfram recipes, grounding/visual honesty, pedagogy, primary-sources, rivers. Load via `skill_view` with skill name `ailc-history` (see table below). **Do not copy** that skill’s references folder into this skill. |
 | **Wolfram MCP** | Maps, timelines, entity data, conflict graphs (`WolframContext`, `WolframAlpha`, `WolframLanguageEvaluator`). |
-| **skills** toolset | `skill_view` for sibling docs and this skill’s own references. |
+| **skills** toolset | `skill_view` for sibling docs and this skill’s own references (parent **and** children). |
 | **`made-to-stick`** (optional) | Sticky storytelling technique (SUCCESS). Apply invisibly; never name it in learner-facing chapters. |
 
 If Wolfram is unavailable, say so in the author notes and fall back to careful prose — **never invent map URLs**. If `ailc-history` is not installed, stop and tell the user to install the sibling skill from this package; do not improvise a parallel recipes folder.
@@ -63,6 +62,7 @@ skill_view("ailc-history", "references" + "/" + "wolfram-recipes.md")
 
 From **this skill** (`ailc-history-lesson` — local files shipped with the package):
 
+- `references/worker-brief.md` — subagent load order + asset output contract (workers first)  
 - `references/learner-intake-ledger.md`  
 - `references/history-question-ledger.md`  
 - `references/lesson-structure.md`  
@@ -75,6 +75,8 @@ From **this skill** (`ailc-history-lesson` — local files shipped with the pack
 
 - **MUST** — absolute; do not skip.  
 - **SHOULD** — strongly recommended default; omit only for a valid reason (e.g. micro-lesson, user asked for outline only).
+
+**Maps, timelines, war maps, and story-illustration images MUST be produced by subagents** via `delegate_task` (see Orchestration). The parent **MUST NOT** run heavy Wolfram map/timeline jobs or image find/generate on the main agent when children can do them. Parent still owns: intake, ledger, chapter plan, chapter prose, `index.md` / `sources.md`, and final asset placement.
 
 ---
 
@@ -260,15 +262,15 @@ Shorten for fast mode or small time budgets. Details: `references/lesson-structu
 
 ## Phase 3 — Research & visuals (tool-driven; take the time)
 
-Use the **same toolset and honesty rules as `ailc-history`**.
+Use the **same toolset and honesty rules as `ailc-history`**, and **fan out subagents** for heavy work (see Orchestration below).
 
 ### Grounding order
 
-1. **Wolfram** for entities, dated maps, timelines, conflict communities — recipes in `ailc-history` → `wolfram-recipes.md`  
-2. **Primary sources** when a good short quote exists — `primary-sources.md`; never invent quotes  
-3. **Secondary / encyclopedia** — **[Grokipedia](https://grokipedia.com)** only — **not Wikipedia** (`grounding.md`)  
-4. **Web / museum** for period art, coins, architecture photos — real URLs only  
-5. **AI image generation** for story scenes when period imagery is thin — label **modern reconstruction**; never as fake maps or fake primary evidence  
+1. **Wolfram** for entities, dated maps, timelines, conflict communities — sibling wolfram-recipes via workers  
+2. **Primary sources** when a good short quote exists — sibling primary-sources; never invent quotes  
+3. **Secondary / encyclopedia** — **[Grokipedia](https://grokipedia.com)** only — **not Wikipedia**  
+4. **Web / museum** for period art, coins, architecture photos — real URLs only (workers for find)  
+5. **AI image generation** for story scenes when period imagery is thin — label **modern reconstruction**; never as fake maps  
 
 ### Establish historic context (before tunnel vision)
 
@@ -280,22 +282,11 @@ Use the **same toolset and honesty rules as `ailc-history`**.
 6. **Who was alive / notable**  
 7. **Then** zoom to the learner’s focus  
 
+Dispatch **separate thin children** for (2)–(4) and focus zoom; do not run the whole checklist serially on the parent.
+
 ### Visuals for static files
 
-Unlike the interactive tutor, **save assets into `./output/<slug>/assets/`** and embed with relative markdown links. Rules: `references/visual-assets.md`.
-
-You **MAY** use subagents / parallel workers for maps and story illustrations (same thin-goal discipline as ailc-history worker-brief) — but you are **not** required to keep a chat spinner happy. Prefer completeness and correct captions over speed.
-
-Suggested fan-out for extensive packs (adapt concurrency limits):
-
-| Worker goal | Deliverable |
-|-------------|-------------|
-| Continent/world map at year Y | Image file + caption + power names |
-| Focus country/war map | Image file + caption |
-| Timeline (person or periods) | Image file + caption |
-| Story illustration | Period/photo URL resolved **or** AI image + reconstruction label |
-
-Parent (you) writes all chapter prose and places images in chapters.
+Save assets into `./output/<slug>/assets/` and embed with relative markdown links. Rules: `references/visual-assets.md`. Workers produce images + captions; **you** place them in chapters.
 
 ### Contrarian / honesty pass
 
@@ -307,19 +298,128 @@ Before finalizing:
 
 ---
 
+## Orchestration: parallel subagents (mandatory for visuals)
+
+You are the **lesson orchestrator**. Priority #1 for the **package**: complete, correct chapters on disk. Priority #2: **do not serialize** slow Wolfram maps, timelines, and story illustrations on the parent — fan them out with Hermes `delegate_task`.
+
+Unlike the interactive tutor, you **may wait** for children when you need their assets before writing a chapter. You **SHOULD** still keep the user updated with short status lines, and you **SHOULD** advance ledger / chapter-plan / prose that does not depend on pending images while workers run.
+
+Hermes docs: [delegation patterns](https://hermes-agent.nousresearch.com/docs/guides/delegation-patterns), [delegation feature](https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation).
+
+### Current `delegate_task` contract
+
+- Use **only** `delegate_task` — there is **no** `delegate_task_async` tool.
+- Call shape: **`goal` + `context`**, or a **`tasks`** array of `{goal, context, role?}` objects.
+- Do **not** pass `toolsets` — children **inherit** the parent’s enabled toolsets (including Wolfram MCP and **skills** / `skill_view`). Ensure both are enabled on the parent.
+- Do **not** pass `background=True` — top-level `delegate_task` already runs in the background.
+- Keep children as **leaf** (omit `role`, or `"leaf"`). Stay within `delegation.max_concurrent_children` (**default 3**).
+- **Do not** tell children to load the full `SKILL.md` — they load this skill’s `references/worker-brief.md` via `skill_view`.
+
+### Per-child scope (critical)
+
+- Each child: **≤3 small deliverables** (maps/timelines/short fact lists/one story image). Prefer 1–2.
+- Each `goal` / `context` stays **short**: year, theater, entity free-text, named recipe, target `assets/` filename — **not** “write chapter 03” or “full lesson.”
+- Need more than 3 deliverables → **split across children** or run a second batch after the first returns.
+- Children return **visuals + terse facts only**. **You** write chapter prose and assemble `index.md`.
+
+### What MUST be delegated
+
+| Work | Delegate? |
+|------|-----------|
+| Continent/world historical map | **MUST** |
+| Focus country / war / battle map | **MUST** |
+| Person or periods timeline | **MUST** |
+| Story illustration (period photo find or AI gen) | **MUST** |
+| River overlay when rivers are the argument | **MUST** |
+| Short power/conflict fact bullets tied to a map | **SHOULD** (same child as the map when thin) |
+| Intake questions, chapter plan, chapter prose, TOC, sources.md | **Parent only** |
+| Ledger structure and synthesis | **Parent only** (workers may supply evidence bullets) |
+
+### Mandatory child-context preamble
+
+Every child `context` **must** start with:
+
+```text
+First tool call: skill_view("ailc-history-lesson", "references/worker-brief.md").
+Follow the lesson worker brief (it loads sibling ailc-history recipes).
+Return visuals + terse fact bullets only (≤3 deliverables).
+Do not write chapters; do not call delegate_task.
+```
+
+Then a **brief** year/theater/recipe line and, when saving to disk:
+
+```text
+Asset dir: ./output/<slug>/assets/
+Suggested filename: <chapterNN>-<role>.png
+```
+
+### Typical extensive fan-out (multiple batches OK)
+
+Cap each batch at concurrency (default **3**). Run further batches after results land.
+
+| Batch | Goals (examples) |
+|-------|------------------|
+| **A — World context** | Continent map · conflict communities · (optional) period list bullets |
+| **B — Focus** | Historical country or war map · person/era timeline |
+| **C — Story & culture** | Story illustration · period art/coin photo · (optional) primary-source quote lookup |
+
+Fast mode: one batch of 1–3 children for the chapters you are actually writing.
+
+### Batch example shape
+
+```text
+delegate_task(
+    tasks=[
+        {
+            "goal": "Continent map Europe/Near East c. 100 AD into lesson assets",
+            "context": "First tool call: skill_view(\"ailc-history-lesson\", \"references/worker-brief.md\"). Follow the lesson worker brief. Visuals + terse facts only; ≤3 deliverables. Do not write chapters; do not call delegate_task.\n\nYear: 100 AD. Theater: Europe + Near East. Recipe: continent map. ≤5 bullets: big powers.\nAsset dir: ./output/roman-empire-100ad-lesson/assets/\nSuggested filename: 02-world-100ad.png"
+        },
+        {
+            "goal": "Map Roman Empire in 100 AD into lesson assets",
+            "context": "First tool call: skill_view(\"ailc-history-lesson\", \"references/worker-brief.md\"). Follow the lesson worker brief. Visuals + terse facts only; ≤3 deliverables. Do not write chapters; do not call delegate_task.\n\nEntity: Roman Empire. Year: 100. Recipe: historical country in a year.\nAsset dir: ./output/roman-empire-100ad-lesson/assets/\nSuggested filename: 03-roman-empire-100.png"
+        },
+        {
+            "goal": "Story illustration: courier on a Roman road c. 100 AD",
+            "context": "First tool call: skill_view(\"ailc-history-lesson\", \"references/worker-brief.md\"). Follow the lesson worker brief (load sibling grounding for story images). Visuals + caption only; ≤3 deliverables. Do not write chapters; do not call delegate_task.\n\nYear: c. 100 AD. Place: Roman provincial road. Scene: courier / imperial post. Prefer period art; else modern reconstruction label.\nAsset dir: ./output/roman-empire-100ad-lesson/assets/\nSuggested filename: 05-story-courier-reconstruction.png"
+        }
+    ]
+)
+```
+
+### Parallelism rules
+
+- One sub-agent per **independent** thin workload.
+- Dispatch as soon as year/topic and chapter plan (or asset list) are clear.
+- Prefer **overlapping** work: while batch A runs, draft `learner-profile.md`, ledger primaries, or chapter stubs without images.
+- When results arrive, **save/confirm** files under `assets/`, then embed in chapters.
+- If a child times out or returns empty: note the gap in `sources.md`, use prose + honest “map unavailable” only if a retry also fails; **retry once** with a simpler goal when possible.
+
+### Parent vs child ownership
+
+| Parent (you) | Child (leaf) |
+|--------------|--------------|
+| Intake, ledger, chapter plan | Wolfram maps / timelines |
+| All chapter markdown + nav | Story find/generate |
+| `index.md`, `sources.md` | Terse power/conflict bullets |
+| Final caption polish + embed | Write bytes under `assets/` when possible |
+| Quality bar / link checks | No chapter files |
+
+---
+
 ## Phase 4 — Write files
 
 1. Create `./output/<slug>/` and `chapters/`, `assets/`  
 2. Finalize `learner-profile.md` and `question-ledger.md`  
-3. Write `index.md` with TOC (update links after all chapters exist)  
-4. Write each `chapters/NN-*.md` from the chapter plan using `chapter-template.md`  
-5. Embed visuals from `assets/` with captions  
-6. Write `sources.md` (Wolfram entities, Grokipedia pages, museum URLs, AI prompts summary if useful)  
-7. Verify navigation: every chapter links to TOC, previous, next; every TOC link resolves  
+3. **Dispatch** visual/research children for planned assets (Orchestration)  
+4. Write `index.md` with TOC (update links after all chapters exist)  
+5. Write each `chapters/NN-*.md` from the chapter plan using `chapter-template.md`  
+6. Embed visuals from `assets/` with captions as children return  
+7. Write `sources.md` (Wolfram entities, Grokipedia pages, museum URLs, AI prompts summary if useful)  
+8. Verify navigation: every chapter links to TOC, previous, next; every TOC link resolves  
 
-**Work in the files**, not only in chat. Chat updates **SHOULD** be short status (“Writing `chapters/03-conflict.md`; embedding war map”).
+**Work in the files**, not only in chat. Chat updates **SHOULD** be short status (“Dispatched continent + empire maps; drafting `chapters/02-….md`”).
 
-**Critical rule:** When the user asks for a full lesson, deliver the **complete package in one pass** (or clearly staged passes with files already useful). A chat summary with “I could write chapters later” fails the contract.
+**Critical rule:** When the user asks for a full lesson, deliver the **complete package** (or clearly staged passes with files already useful). A chat summary with “I could write chapters later” fails the contract.
 
 ---
 
@@ -341,8 +441,8 @@ Author-facing files (`question-ledger.md`, parts of `learner-profile.md`, chat) 
 1. Read existing `./output/<slug>/` if present  
 2. Confirm topic + level (minimal intake)  
 3. Thin ledger or append questions  
-4. Write or patch 1–3 chapters + update TOC  
-5. Add ≥1 visual per new chapter  
+4. **`delegate_task`** 1–3 thin visual goals for the chapters you will touch  
+5. Write or patch 1–3 chapters + embed returned assets + update TOC  
 6. Update `sources.md`  
 
 ---
@@ -351,9 +451,9 @@ Author-facing files (`question-ledger.md`, parts of `learner-profile.md`, chat) 
 
 1. **Phase 0 — Intake** — profile; slug; `learner-profile.md`  
 2. **Phase 1 — Ledger** — dense question ledger; research rounds until saturation  
-3. **Phase 2 — Design** — chapter plan with visuals and hooks  
-4. **Phase 3 — Assets** — Wolfram maps/timelines; story images; save under `assets/`  
-5. **Phase 4 — Write** — all chapters + index + sources  
+3. **Phase 2 — Design** — chapter plan with required visuals and hooks  
+4. **Phase 3 — Dispatch assets** — `delegate_task` batches (world → focus → story); create `assets/`  
+5. **Phase 4 — Write** — chapters + index + sources while / after workers return  
 6. **Phase 5 — Verify** — quality bar below  
 
 ---
@@ -366,6 +466,7 @@ Author-facing files (`question-ledger.md`, parts of `learner-profile.md`, chat) 
 - Every chapter has **≥1 inline visual** from `assets/` (or an honest “map unavailable” note with prose fallback — rare)  
 - At least one **world/continent context** visual appears early in the pack when geography matters  
 - Story moments used in teaching are **illustrated** and labeled if AI  
+- **Maps / timelines / story images were produced via subagents** (`delegate_task`), not silently skipped for “parent did it all” convenience (unless the host has no delegation — then say so and proceed carefully)  
 - Terms glossed on first use; primary quotes attributed or omitted  
 - No Wikipedia as encyclopedia source; Grokipedia / Wolfram / primary / museum preferred  
 - No invented map URLs, Wikimedia guesses, or fabricated quotations  
@@ -378,6 +479,7 @@ Author-facing files (`question-ledger.md`, parts of `learner-profile.md`, chat) 
 ## What this skill is not
 
 - **Not** the interactive history tutor (`ailc-history`) — send live Q&A there  
+- **Not** a single-threaded parent that reimplements every Wolfram map on the main agent  
 - **Not** a chat-only lesson without files on disk  
 - **Not** a dump of dates without maps, stories, or navigation  
 - **Not** a duplicate of `ailc-history` references — always depend on the sibling skill  
@@ -390,7 +492,8 @@ User: “Prepare a lesson on the Roman Empire around 100 AD for a curious high-s
 
 1. Intake → `learner-profile.md` (level: high school; goal: general literacy; time: ~2h)  
 2. Ledger → primaries on Trajanic Rome, Parthia, provinces, daily life, sources  
-3. Chapter plan → 01 hook & framing · 02 world map · 03 empire focus · 04 rivals & wars · 05 human story · 06 culture & memory  
-4. Assets → continent map 100 AD; Roman Empire map; optional war/timeline; story illustration (e.g. courier on a road / Trajan’s forum scene as reconstruction)  
-5. Write chapters with nav + inline images  
-6. Hand the user `./output/roman-empire-100ad-lesson/index.md`  
+3. Chapter plan → 01 hook · 02 world · 03 empire focus · 04 rivals · 05 human story · 06 culture & memory  
+4. **`delegate_task` batch A** — continent map + empire map + story illustration (worker-brief preamble; `assets/` filenames)  
+5. While waiting: draft ledger answers + chapter stubs with nav  
+6. On return: embed images, finish chapters, `index.md`, `sources.md`  
+7. Hand the user `./output/roman-empire-100ad-lesson/index.md`  

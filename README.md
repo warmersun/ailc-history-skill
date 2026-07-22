@@ -27,7 +27,8 @@ Both share the same Wolfram toolset and honesty rules. Lesson authoring **depend
 - Builds a **question ledger** (primary / secondary / rabbit holes / unresolved)
 - Writes a navigable lesson under `./output/<slug>/`: `index.md` TOC, numbered chapters with prev/next links, `assets/`, `sources.md`
 - Embeds Wolfram maps/timelines and story illustrations **inline** in the chapter files
-- Takes as long as needed — optimized for durable self-study files, not chat speed
+- **Fans out Hermes subagents** (`delegate_task`) for maps, timelines, and story images — same thin-worker pattern as the interactive tutor; parent writes chapters and places assets
+- Takes as long as needed for a complete package — may wait on workers, but still parallelizes heavy Wolfram work
 
 ## Repository layout
 
@@ -47,6 +48,7 @@ Both share the same Wolfram toolset and honesty rules. Lesson authoring **depend
     └── ailc-history-lesson/
         ├── SKILL.md                      # Lesson package author (batch / offline)
         └── references/
+            ├── worker-brief.md           # Subagent load order + asset output contract
             ├── learner-intake-ledger.md  # Profile the learner before writing
             ├── history-question-ledger.md
             ├── lesson-structure.md       # Chapter arcs by level and time budget

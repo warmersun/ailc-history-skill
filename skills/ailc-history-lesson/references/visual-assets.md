@@ -2,12 +2,7 @@
 
 How to produce, save, caption, and embed maps, timelines, and story images in the lesson package.
 
-**Authority for historical visual honesty and recipe choice:** always load **`ailc-history`** references:
-
-- `references/grounding.md` — matrix, art, AI illustration, Grokipedia rule  
-- `references/wolfram-recipes.md` — maps, timelines, entities, failure loops  
-- `references/rivers-natural-earth.md` — when rivers are the teaching argument  
-- `references/worker-brief.md` — if delegating thin visual jobs  
+**Authority for historical visual honesty and recipe choice:** load sibling **`ailc-history`** docs via `skill_view` (wolfram-recipes, grounding, rivers-natural-earth). Lesson subagents start from **this skill’s** `worker-brief.md`, which points them at those sibling files.
 
 This file only covers **on-disk packaging** for prepared lessons.
 
@@ -73,14 +68,16 @@ Rules:
 
 ---
 
-## Saving workflow (author)
+## Saving workflow (author + workers)
 
-1. Run Wolfram recipe or image find/generate (yourself or thin worker).  
-2. Write binary under `./output/<slug>/assets/` with a stable filename.  
-3. Embed relative path in the chapter.  
+1. **Parent dispatches** thin `delegate_task` children (maps, timelines, story images) — see skill Orchestration.  
+2. **Worker** runs Wolfram recipe or image find/generate; saves under `./output/<slug>/assets/` when possible.  
+3. **Parent** embeds relative path in the chapter and polishes caption if needed.  
 4. Log origin in `sources.md` (entity free-text, year, recipe kind, or image URL / “AI reconstruction”).  
 
 If the host returns a remote image URL only, **prefer downloading** to `assets/` for portability. If download is impossible, embed the verified remote URL and note dependency in `sources.md`.
+
+**MUST NOT** (parent): run heavy map/timeline/story-image work on the main agent when `delegate_task` is available — that is the workers’ job.
 
 ---
 
@@ -90,23 +87,24 @@ If the host returns a remote image URL only, **prefer downloading** to `assets/`
 |------|-----|
 | **Every chapter** | ≥1 inline visual **or** an explicit short note that no reliable map/image exists and prose carries the load |
 | **Extensive pack** | ≥1 world/continent context visual early; ≥1 focus map or timeline; ≥1 story illustration somewhere in the pack |
-| **Story used** | That story **MUST** be illustrated (period/photo or labeled reconstruction) |
+| **Story used** | That story **MUST** be illustrated (period/photo or labeled reconstruction) via a **subagent** |
 
 ---
 
-## Worker fan-out (optional)
+## Worker fan-out (required for maps / timelines / story art)
 
-When using subagents, keep goals thin (ailc-history worker-brief). Example context preamble:
+Keep goals thin. Every child context starts with this skill’s worker brief:
 
 ```text
-First tool calls: skill_view("ailc-history", "references/worker-brief.md"),
-then skill_view("ailc-history", "references/wolfram-recipes.md").
-Follow the worker brief. Return visuals + terse fact bullets only (≤3 deliverables).
-Do not teach the learner; do not call delegate_task.
-Save or return image paths suitable for embedding in a static lesson.
+First tool call: skill_view("ailc-history-lesson", "references/worker-brief.md").
+Follow the lesson worker brief (loads sibling ailc-history recipes).
+Return visuals + terse fact bullets only (≤3 deliverables).
+Do not write chapters; do not call delegate_task.
+Asset dir: ./output/<slug>/assets/
+Suggested filename: <chapterNN>-<role>.png
 ```
 
-The **lesson author** still writes chapter prose and final `assets/` placement.
+The **lesson author** still writes chapter prose and final embed lines.
 
 ---
 

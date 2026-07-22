@@ -131,6 +131,7 @@ Write everything under `./output/<slug>/`.
 - **How to use this lesson** (suggested order; optional “skip if…” notes)  
 - **Table of contents** with relative links to every chapter  
 - Links to [`question-ledger.md`](question-ledger.md), [`learner-profile.md`](learner-profile.md), [`sources.md`](sources.md)  
+- Optional one line: this pack can feed `/ailc-history-narrative` for a polished essay/mini-book  
 - Optional YAML frontmatter (dates, topic tags) — fine on `index.md` only  
 
 ### Chapter file requirements
@@ -476,9 +477,24 @@ Author-facing files (`question-ledger.md`, parts of `learner-profile.md`, chat) 
 
 ---
 
+## Downstream: narrative polish
+
+This package is the **research / teaching corpus**. For sticky long-form prose (essay or mini-book) built **only** on this pack, use sibling skill **`ailc-history-narrative`** (`/ailc-history-narrative`). Do not turn this skill into a full non-fiction rewrite by default.
+
+When a chapter or ledger answer contains a vivid, named, dated moment worth dramatizing later, mark it with an HTML comment the narrative skill can find:
+
+```html
+<!-- STORY-SEED -->
+```
+
+Place the comment near the moment (scene, person, primary line). Optional one-line note after it is fine in author-facing ledger text; in learner chapters keep the comment only (invisible in most Markdown renderers).
+
+---
+
 ## What this skill is not
 
 - **Not** the interactive history tutor (`ailc-history`) — send live Q&A there  
+- **Not** the polished narrative pass (`ailc-history-narrative`) — that skill ingests this pack and rewrites  
 - **Not** a single-threaded parent that reimplements every Wolfram map on the main agent  
 - **Not** a chat-only lesson without files on disk  
 - **Not** a dump of dates without maps, stories, or navigation  

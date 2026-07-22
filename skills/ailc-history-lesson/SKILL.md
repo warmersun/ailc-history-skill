@@ -32,26 +32,36 @@ You are a **History Lesson Author**. Your job is to turn a topic (and a learner 
 
 | Dependency | Role |
 |------------|------|
-| **`ailc-history`** (sibling skill in this repo) | **Required.** Shared toolset and references: Wolfram recipes, grounding/visual honesty, worker brief, pedagogy, primary-sources, rivers. Load via `skill_view("ailc-history", "references/…")` or read `../ailc-history/references/…`. **Do not copy** that skill’s `references/` folder into this skill. |
+| Dependency | Role |
+|------------|------|
+| **`ailc-history`** (sibling skill in this repo) | **Required.** Shared toolset and docs: Wolfram recipes, grounding/visual honesty, worker brief, pedagogy, primary-sources, rivers. Load each file via `skill_view` with skill name `ailc-history` (see table below). **Do not copy** that skill’s references folder into this skill. |
 | **Wolfram MCP** | Maps, timelines, entity data, conflict graphs (`WolframContext`, `WolframAlpha`, `WolframLanguageEvaluator`). |
-| **skills** toolset | `skill_view` for `ailc-history` references and this skill’s own references. |
+| **skills** toolset | `skill_view` for sibling docs and this skill’s own references. |
 | **`made-to-stick`** (optional) | Sticky storytelling technique (SUCCESS). Apply invisibly; never name it in learner-facing chapters. |
 
 If Wolfram is unavailable, say so in the author notes and fall back to careful prose — **never invent map URLs**. If `ailc-history` is not installed, stop and tell the user to install the sibling skill from this package; do not improvise a parallel recipes folder.
 
 **Reference sharing (mandatory reads before writing chapters):**
 
-From **`ailc-history`** (sibling — via `skill_view` or `../ailc-history/references/`):
+From sibling skill **`ailc-history`** — call `skill_view` with skill=`ailc-history` and the path column below (paths live only in that skill; they are not files of this package):
 
-- `../ailc-history/references/wolfram-recipes.md` — sole home for WL evaluator rules and map/timeline recipes  
-- `../ailc-history/references/grounding.md` — visual matrix, art, AI illustration, honesty, Grokipedia rule  
-- `../ailc-history/references/pedagogy.md` — world-context pass, stories, sources, flow  
-- `../ailc-history/references/reply-format.md` — teaching prose shape (adapt for static chapters)  
-- `../ailc-history/references/primary-sources.md` — when quoting letters, chronicles, editions  
-- `../ailc-history/references/rivers-natural-earth.md` — when rivers are the teaching argument  
-- `../ailc-history/references/worker-brief.md` — if you fan out visual workers  
+| skill_view path (under ailc-history) | Role |
+|--------------------------------------|------|
+| wolfram-recipes.md (in that skill’s references dir) | Sole home for WL evaluator rules and map/timeline recipes |
+| grounding.md (in that skill’s references dir) | Visual matrix, art, AI illustration, honesty, Grokipedia rule |
+| pedagogy.md (in that skill’s references dir) | World-context pass, stories, sources, flow |
+| reply-format.md (in that skill’s references dir) | Teaching prose shape (adapt for static chapters) |
+| primary-sources.md (in that skill’s references dir) | Letters, chronicles, editions |
+| rivers-natural-earth.md (in that skill’s references dir) | When rivers are the teaching argument |
+| worker-brief.md (in that skill’s references dir) | If you fan out visual workers |
 
-From **this skill** (`ailc-history-lesson`):
+Example call shape (do not invent other local paths here):
+
+```text
+skill_view("ailc-history", "references" + "/" + "wolfram-recipes.md")
+```
+
+From **this skill** (`ailc-history-lesson` — local files shipped with the package):
 
 - `references/learner-intake-ledger.md`  
 - `references/history-question-ledger.md`  
